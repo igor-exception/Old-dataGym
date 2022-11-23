@@ -1,0 +1,9 @@
+{
+    "name": "root/data-gym",
+    "autoload": {
+        "psr-4": {
+            "Root\\DataGym\\": "src/"
+        }
+    },
+    "require": {}
+}
