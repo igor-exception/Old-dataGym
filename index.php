@@ -2,7 +2,7 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/_header.php';
 ?>
 
 <div class="row">
@@ -20,14 +20,14 @@ require_once __DIR__ . '/includes/header.php';
         <div class="card" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">Registrar/Logar</h5>
-                <p class="card-text">Caso já tenha conta, faça login. Caso não tenha, registre-se</p>
-                <a href="#" class="card-link">Nova conta</a>
-                <a href="#" class="card-link">Login</a>
+                <p class="card-text">Caso já tenha conta, faça login. Ou, registre-se</p>
+                <a href="./view/signup.php" class="card-link">Nova conta</a>
+                <a href="./view/signin.php" class="card-link">Login</a>
             </div>
         </div>
     </div>
   </div>
 
 <?php
-require_once __DIR__ . '/includes/footer.php';
+require_once __DIR__ . '/includes/_footer.php';
 ?>
