@@ -21,8 +21,8 @@ require_once __DIR__ . '/includes/_header.php';
             <div class="card-body">
                 <h5 class="card-title">Registrar/Logar</h5>
                 <p class="card-text">Caso já tenha conta, faça login. Ou, registre-se</p>
-                <a href="./view/signup.php" class="card-link">Nova conta</a>
                 <a href="./view/signin.php" class="card-link">Login</a>
+                <a href="./view/signup.php" class="card-link">Nova conta</a>
             </div>
         </div>
     </div>

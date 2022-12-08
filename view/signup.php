@@ -3,7 +3,16 @@ require __DIR__ . './../vendor/autoload.php';
 
 if(isset($_POST['InputName'] , $_POST['InputEmail'], $_POST['InputPassword'], $_POST['InputPasswordConfirmation']))
 {
-    var_dump($_POST);
+    $user = new \App\User\User();
+    $user->createUser($_POST['InputName'] , $_POST['InputEmail'], $_POST['InputPassword'], $_POST['InputPasswordConfirmation']);
+
+    if($user->thereIsError()){
+        foreach($user->getErrorMessages() as $message) {
+            echo "<p>{$message}</p>";
+        }
+    }else{
+        echo "<p>Cadastro realizado com sucesso!</p>";
+    }
 }
 
 
