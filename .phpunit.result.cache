@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Warning":6},"times":{"Warning":0.126,"Tests\\Unit\\App\\User\\UserTest::it_sum_1_plus_1_equals_2":0.164,"Tests\\Unit\\App\\User\\UserTest::test_it_sum_1_plus_1_equals_2":0.124}}
