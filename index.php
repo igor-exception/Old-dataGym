@@ -3,6 +3,12 @@
 require __DIR__ . '/vendor/autoload.php';
 
 require_once __DIR__ . '/includes/_header.php';
+
+if(isset($_GET['msg'])){
+    if($_GET['msg'] == 'success'){
+        echo "<p>Cadastro realizado com sucesso!</p>";
+    }
+}
 ?>
 
 <div class="row">
