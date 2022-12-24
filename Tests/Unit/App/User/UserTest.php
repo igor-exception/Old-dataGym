@@ -16,75 +16,93 @@ class UserTest extends \PHPUnit\Framework\TestCase
                                    $this->password,
                                    $this->password_confirmation);
 
-        $this->assertFalse($user->thereIsErrors());
+        $this->assertNotEmpty($user);
     }
 
     public function test_an_empty_name_should_get_an_error()
     {
+        $this->expectException(\App\Exception\EmptyUserNameException::class);
+
         $user = new \App\User\User('',
                                     $this->email,
                                     $this->password,
                                     $this->password_confirmation);
-
-        $this->assertContains("Nome não pode ser vazio.", $user->getErrorMessages());
     }
 
-    public function test_a_short_name_should_get_an_error(){
+    public function test_a_short_name_should_get_an_error()
+    {
+        $this->expectException(\LengthException::class);
+        
         $user = new \App\User\User(
                                     'Jo',
                                     $this->email,
                                     $this->password,
                                     $this->password_confirmation);
-
-        $this->assertContains('Nome precisa ser maior ou igual a 3 caracteres.', $user->getErrorMessages());
     }
 
-    public function test_a_big_name_should_get_an_error() {
+    public function test_a_big_name_should_get_an_error()
+    {
+        $this->expectException(\LengthException::class);
+        
         $user = new \App\User\User(
                                     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
                                     $this->email,
                                     $this->password,
                                     $this->password_confirmation);
-        
-        $this->assertContains("Nome precisa ser menor ou igual a 256 caracteres.", $user->getErrorMessages());
     }
 
-    public function test_a_invalid_email_should_get_an_error() {
+    public function test_a_invalid_email_should_get_an_error()
+    {
+        $this->expectException(\App\Exception\InvalidEmailFormatException::class);
+
         $user = new \App\User\User(
                                     $this->name,
                                     'john.doe.com',
                                     $this->password,
                                     $this->password_confirmation);
-        $this->assertContains("Email no formato inválido.", $user->getErrorMessages());
     }
 
-    public function test_a_big_email_should_get_an_error() {
+    public function test_a_big_email_should_get_an_error()
+    {
+        $this->expectException(\LengthException::class);
+
         $user = new \App\User\User(
                                 $this->name,
                                 '66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com',
                                 $this->password,
                                 $this->password_confirmation);
-        
-        $this->assertContains("Email deve ser menor ou igual a 65 caracteres.", $user->getErrorMessages());
     }
 
-    public function test_a_short_password_should_get_an_error() {
+    public function test_password_has_blank_character_should_get_an_error()
+    {
+        $this->expectException(\App\Exception\InvalidPasswordBlankCharacterException::class);
+
+        $user = new \App\User\User(
+            $this->name,
+            $this->email,
+            "asd 123 asd",
+            $this->password_confirmation);
+    }
+
+    public function test_a_short_password_should_get_an_error()
+    {
+        $this->expectException(\LengthException::class);
+
         $user = new \App\User\User(
                                     $this->name,
                                     $this->email,
                                     'passwd',
                                     'passwd');
-
-        $this->assertContains("Senha deve ter no mínimo 8 caracteres.", $user->getErrorMessages());
     }
 
-    public function test_a_different_password_and_password_confirmation_should_get_an_error() {
+    public function test_a_different_password_and_password_confirmation_should_get_an_error()
+    {
+        $this->expectException(\App\Exception\MismatchPasswordException::class);
+
         $user = new \App\User\User(
                                     $this->name,
                                     $this->email,
                                     'password123',
                                     'password000');
-
-        $this->assertContains("Senha e confirmação de senha devem ser iguais.", $user->getErrorMessages());
     }
 }
