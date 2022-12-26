@@ -1,8 +1,8 @@
 <?php
-
 namespace App\User;
 
-class User {
+class User
+{
     private string $name;
     private string $email;
     private string $password;
@@ -18,15 +18,16 @@ class User {
     {
         $name = htmlspecialchars($name);
         $name = trim($name);
+        
         if(empty($name)){
             Throw new \App\Exception\EmptyUserNameException;
         }
 
-        if(strlen($name) < 3){
+        if(strlen($name) < 3) {
             Throw new \LengthException("Nome precisa ser maior ou igual a 3 caracteres.");
         }
 
-        if(strlen($name) > 256){
+        if(strlen($name) > 256) {
             Throw new \LengthException("Nome precisa ser menor ou igual a 256 caracteres.");
         }
 
@@ -38,7 +39,7 @@ class User {
         $email = htmlspecialchars($email);
         $email = trim($email);
         
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Throw new \App\Exception\InvalidEmailFormatException();
         }
 

@@ -11,10 +11,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
 
     public function test_create_a_valid_user()
     {
-        $user = new \App\User\User($this->name, 
-                                   $this->email,
-                                   $this->password,
-                                   $this->password_confirmation);
+        $user = new \App\User\User(
+            $this->name, 
+            $this->email,
+            $this->password,
+            $this->password_confirmation
+        );
 
         $this->assertNotEmpty($user);
     }
@@ -23,10 +25,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException(\App\Exception\EmptyUserNameException::class);
 
-        $user = new \App\User\User('',
-                                    $this->email,
-                                    $this->password,
-                                    $this->password_confirmation);
+        $user = new \App\User\User(
+            '',
+            $this->email,
+            $this->password,
+            $this->password_confirmation
+        );
     }
 
     public function test_a_short_name_should_get_an_error()
@@ -34,10 +38,11 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\LengthException::class);
         
         $user = new \App\User\User(
-                                    'Jo',
-                                    $this->email,
-                                    $this->password,
-                                    $this->password_confirmation);
+            'Jo',
+            $this->email,
+            $this->password,
+            $this->password_confirmation
+        );
     }
 
     public function test_a_big_name_should_get_an_error()
@@ -45,10 +50,13 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\LengthException::class);
         
         $user = new \App\User\User(
-                                    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                                    $this->email,
-                                    $this->password,
-                                    $this->password_confirmation);
+            'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            $this->email,
+            $this->password,
+            $this->password_confirmation
+        );
     }
 
     public function test_a_invalid_email_should_get_an_error()
@@ -56,10 +64,11 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\App\Exception\InvalidEmailFormatException::class);
 
         $user = new \App\User\User(
-                                    $this->name,
-                                    'john.doe.com',
-                                    $this->password,
-                                    $this->password_confirmation);
+            $this->name,
+            'john.doe.com',
+            $this->password,
+            $this->password_confirmation
+        );
     }
 
     public function test_a_big_email_should_get_an_error()
@@ -67,10 +76,11 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\LengthException::class);
 
         $user = new \App\User\User(
-                                $this->name,
-                                '66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com',
-                                $this->password,
-                                $this->password_confirmation);
+            $this->name,
+            '66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com',
+            $this->password,
+            $this->password_confirmation
+        );
     }
 
     public function test_password_has_blank_character_should_get_an_error()
@@ -81,7 +91,8 @@ class UserTest extends \PHPUnit\Framework\TestCase
             $this->name,
             $this->email,
             "asd 123 asd",
-            $this->password_confirmation);
+            $this->password_confirmation
+        );
     }
 
     public function test_a_short_password_should_get_an_error()
@@ -89,10 +100,11 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\LengthException::class);
 
         $user = new \App\User\User(
-                                    $this->name,
-                                    $this->email,
-                                    'passwd',
-                                    'passwd');
+            $this->name,
+            $this->email,
+            'passwd',
+            'passwd'
+        );
     }
 
     public function test_a_different_password_and_password_confirmation_should_get_an_error()
@@ -100,9 +112,10 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\App\Exception\MismatchPasswordException::class);
 
         $user = new \App\User\User(
-                                    $this->name,
-                                    $this->email,
-                                    'password123',
-                                    'password000');
+            $this->name,
+            $this->email,
+            'password123',
+            'password000'
+        );
     }
 }
