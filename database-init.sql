@@ -2,9 +2,9 @@ CREATE DATABASE datagym;
 use datagym;
 CREATE TABLE users (
     id int NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     PRIMARY KEY(id)
 );
 CREATE TABLE exercises (

@@ -9,113 +9,75 @@ class UserTest extends \PHPUnit\Framework\TestCase
     private $password = '12345678';
     private $password_confirmation = '12345678';
 
-    public function test_create_a_valid_user()
+    /**
+     * @dataProvider names_dataprovider
+     */
+    public function test_name($name, $exception_name): void
     {
-        $user = new \App\User\User(
-            $this->name, 
-            $this->email,
-            $this->password,
-            $this->password_confirmation
-        );
-
-        $this->assertNotEmpty($user);
-    }
-
-    public function test_an_empty_name_should_get_an_error()
-    {
-        $this->expectException(\App\Exception\EmptyUserNameException::class);
+        $this->expectException($exception_name);
 
         $user = new \App\User\User(
-            '',
+            $name,
             $this->email,
             $this->password,
             $this->password_confirmation
         );
     }
 
-    public function test_a_short_name_should_get_an_error()
+    /**
+     * @dataProvider emails_dataprovider
+     */
+    public function test_email($email, $exception_name): void
     {
-        $this->expectException(\LengthException::class);
-        
-        $user = new \App\User\User(
-            'Jo',
-            $this->email,
-            $this->password,
-            $this->password_confirmation
-        );
-    }
-
-    public function test_a_big_name_should_get_an_error()
-    {
-        $this->expectException(\LengthException::class);
-        
-        $user = new \App\User\User(
-            'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            $this->email,
-            $this->password,
-            $this->password_confirmation
-        );
-    }
-
-    public function test_a_invalid_email_should_get_an_error()
-    {
-        $this->expectException(\App\Exception\InvalidEmailFormatException::class);
+        $this->expectException($exception_name);
 
         $user = new \App\User\User(
             $this->name,
-            'john.doe.com',
+            $email,
             $this->password,
             $this->password_confirmation
         );
     }
 
-    public function test_a_big_email_should_get_an_error()
+    /**
+     * @dataProvider passwords_dataprovider
+     *
+     */
+    public function test_password($password, $password_confirmation, $exception_name): void
     {
-        $this->expectException(\LengthException::class);
-
-        $user = new \App\User\User(
-            $this->name,
-            '66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com',
-            $this->password,
-            $this->password_confirmation
-        );
-    }
-
-    public function test_password_has_blank_character_should_get_an_error()
-    {
-        $this->expectException(\App\Exception\InvalidPasswordBlankCharacterException::class);
+        $this->expectException($exception_name);
 
         $user = new \App\User\User(
             $this->name,
             $this->email,
-            "asd 123 asd",
-            $this->password_confirmation
+            $password,
+            $password_confirmation
         );
     }
 
-    public function test_a_short_password_should_get_an_error()
+    public function names_dataprovider(): array
     {
-        $this->expectException(\LengthException::class);
-
-        $user = new \App\User\User(
-            $this->name,
-            $this->email,
-            'passwd',
-            'passwd'
-        );
+        return [
+            'should_get_an_exception_when_using_empty_name' => ['', \App\Exception\EmptyUserNameException::class],
+            'should_get_an_exception_when_using_name_shorter_than_3_chars' => ['Jo', \LengthException::class],
+            'should_get_an_exception_when_using_name_bigger_than_256_chars' => [str_repeat('a', 257), \LengthException::class]
+        ];
     }
 
-    public function test_a_different_password_and_password_confirmation_should_get_an_error()
+    public function emails_dataprovider(): array
     {
-        $this->expectException(\App\Exception\MismatchPasswordException::class);
+        return [
+            'should_get_an_exception_when_using_email_without_@_symbol' => ['john.doe.com', \App\Exception\InvalidEmailFormatException::class],
+            'should_get_an_exception_when_using_email_bigger_than_65_chars' => ['66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com', \LengthException::class]
+        ];
+    }
 
-        $user = new \App\User\User(
-            $this->name,
-            $this->email,
-            'password123',
-            'password000'
-        );
+    public function passwords_dataprovider(): array
+    {
+        return [
+            'should_get_an_exception_when_using_blank_spaces_in_password' => ['asd 123 asd', 'asd 123 asd', \App\Exception\InvalidPasswordBlankCharacterException::class],
+            'should_get_an_exception_when_using_password_shorter_than_8_chars' => ['passwd', 'passwd', \LengthException::class],
+            'should_get_an_exception_when_using_mismatching_password_and_password_confirmation' => ['password123', 'password000', \App\Exception\MismatchPasswordException::class]
+        ];
     }
 }

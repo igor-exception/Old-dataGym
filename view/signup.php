@@ -21,6 +21,7 @@ if (isset(
     } catch (\Throwable $t) {
         echo "<p>{$t->getMessage()}</p>";
     }
+
 }
 
 require_once __DIR__ . './../includes/_signup.php';

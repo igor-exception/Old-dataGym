@@ -12,6 +12,7 @@ class User
         $this->setName($name);
         $this->setEmail($email);
         $this->setPassword($password, $password_confirmation);
+        $this->createuser();
     }
 
     private function setName($name): void
@@ -65,5 +66,20 @@ class User
         }
 
         $this->password = $password;
+    }
+
+    private function createUser(): void
+    {
+        $db = new \App\Database\Database();
+        $db->insert('users', $this->getUserArray());
+    }
+
+    private function getUserArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password
+        ];
     }
 }
