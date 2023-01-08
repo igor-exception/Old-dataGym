@@ -28,8 +28,8 @@ class User
             Throw new \LengthException("Nome precisa ser maior ou igual a 3 caracteres.");
         }
 
-        if(strlen($name) > 256) {
-            Throw new \LengthException("Nome precisa ser menor ou igual a 256 caracteres.");
+        if(strlen($name) > 255) {
+            Throw new \LengthException("Nome precisa ser menor ou igual a 255 caracteres.");
         }
 
         $this->name = $name;
@@ -59,6 +59,10 @@ class User
 
         if(strlen($password) < 8) {
             Throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
+        }
+
+        if(strlen($password) > 255) {
+            Throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
         }
 
         if($password !== $password_confirmation) {
