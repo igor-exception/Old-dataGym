@@ -1,0 +1,8 @@
+#Rewrite to www
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^localhost.com[nc]
+RewriteRule ^(.*)$ http://www.localhost.com/$1 [r=301,nc]
+
+##Change default directory page
+DirectoryIndex public/index.php
