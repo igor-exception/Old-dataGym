@@ -6,3 +6,29 @@ RewriteRule ^(.*)$ http://www.localhost.com/$1 [r=301,nc]
 
 ##Change default directory page
 DirectoryIndex public/index.php
+
+
+# impede ver lista de arquivos de uma pasta, ex: localhost:5001/Tests
+Options -Indexes
+
+
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+<FilesMatch "composer.json|composer.lock">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+
+<FilesMatch "database-init.sql|docker-compose.yml|phpunit.xml">
+Order Allow,Deny
+Deny from All
+</FilesMatch>
+
+
+# http://localhost:5001/database-init.sql
+
+# .phpunit.result.cache
