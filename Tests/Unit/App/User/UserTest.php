@@ -8,6 +8,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
     private $email = 'john.doe@gmail.com';
     private $password = '12345678';
     private $password_confirmation = '12345678';
+    private $database_mock;
+
+    protected function setUp(): void
+    {
+        $this->database_mock = $this->createMock(\App\Database\Database::class);
+    }
 
     /**
      * @dataProvider invalid_names_dataprovider
@@ -15,14 +21,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function test_red_name($name, $exception_name): void
     {
         $this->expectException($exception_name);
-
-        $database_mock = $this->createMock(\App\Database\Database::class);
         $user = new \App\User\User(
             $name,
             $this->email,
             $this->password,
             $this->password_confirmation,
-            $database_mock
+            $this->database_mock
         );
     }
 
@@ -31,14 +35,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     public function test_green_name($name)
     {
-        $database_mock = $this->createMock(\App\Database\Database::class);
-
         $user = new \App\User\User(
             $name,
             $this->email,
             $this->password,
             $this->password_confirmation,
-            $database_mock
+            $this->database_mock
         );
         $this->assertInstanceOf(\App\User\User::class, $user);
     }
@@ -49,14 +51,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function test_red_email($email, $exception_name): void
     {
         $this->expectException($exception_name);
-
-        $database_mock = $this->createMock(\App\Database\Database::class);
         $user = new \App\User\User(
             $this->name,
             $email,
             $this->password,
             $this->password_confirmation,
-            $database_mock
+            $this->database_mock
         );
     }
 
@@ -65,13 +65,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     public function test_green_email($email): void
     {
-        $database_mock = $this->createMock(\App\Database\Database::class);
         $user = new \App\User\User(
             $this->name,
             $email,
             $this->password,
             $this->password_confirmation,
-            $database_mock
+            $this->database_mock
         );
 
         $this->assertInstanceOf(\App\User\User::class, $user);
@@ -84,14 +83,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function test_red_password($password, $password_confirmation, $exception_name): void
     {
         $this->expectException($exception_name);
-        $database_mock = $this->createMock(\App\Database\Database::class);
-
         $user = new \App\User\User(
             $this->name,
             $this->email,
             $password,
             $password_confirmation,
-            $database_mock
+            $this->database_mock
         );
     }
 
@@ -101,13 +98,12 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     public function test_green_password($password, $password_confirmation): void
     {
-        $database_mock = $this->createMock(\App\Database\Database::class);
         $user = new \App\User\User(
             $this->name,
             $this->email,
             $password,
             $password_confirmation,
-            $database_mock
+            $this->database_mock
         );
 
         $this->assertInstanceOf(\App\User\User::class, $user);
