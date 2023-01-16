@@ -36,7 +36,7 @@ class Database
 
             $stmt = $this->db->prepare($query);
             if(!$stmt->execute()) {
-                Throw new \App\Exception\DatabaseInsertException;
+                throw new \App\Exception\DatabaseInsertException;
             }
         } catch(\App\Exception\DatabaseInsertException $e) {
             echo "Erro ao inserir usuário". $e->getMessage();

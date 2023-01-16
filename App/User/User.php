@@ -7,12 +7,12 @@ class User
     private string $email;
     private string $password;
 
-    public function __construct($name, $email, $password, $password_confirmation)
+    public function __construct($name, $email, $password, $password_confirmation, \App\Database\Database $database)
     {
         $this->setName($name);
         $this->setEmail($email);
         $this->setPassword($password, $password_confirmation);
-        $this->createuser();
+        $this->createUser($database);
     }
 
     private function setName($name): void
@@ -21,15 +21,15 @@ class User
         $name = trim($name);
         
         if(empty($name)){
-            Throw new \App\Exception\EmptyUserNameException;
+            throw new \App\Exception\EmptyUserNameException;
         }
 
         if(strlen($name) < 3) {
-            Throw new \LengthException("Nome precisa ser maior ou igual a 3 caracteres.");
+            throw new \LengthException("Nome precisa ser maior ou igual a 3 caracteres.");
         }
 
         if(strlen($name) > 255) {
-            Throw new \LengthException("Nome precisa ser menor ou igual a 255 caracteres.");
+            throw new \LengthException("Nome precisa ser menor ou igual a 255 caracteres.");
         }
 
         $this->name = $name;
@@ -41,11 +41,11 @@ class User
         $email = trim($email);
         
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            Throw new \App\Exception\InvalidEmailFormatException();
+            throw new \App\Exception\InvalidEmailFormatException();
         }
 
         if(strlen($email) > 65) {
-            Throw new \LengthException("Email precisa ser menor ou igual a 65 caracteres.");
+            throw new \LengthException("Email precisa ser menor ou igual a 65 caracteres.");
         }
 
         $this->email = $email;
@@ -54,28 +54,27 @@ class User
     private function setPassword($password, $password_confirmation): void
     {
         if(strpos($password, ' ')) {
-            Throw new \App\Exception\InvalidPasswordBlankCharacterException();
+            throw new \App\Exception\InvalidPasswordBlankCharacterException();
         }
 
         if(strlen($password) < 8) {
-            Throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
+            throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
         }
 
         if(strlen($password) > 255) {
-            Throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
+            throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
         }
 
         if($password !== $password_confirmation) {
-            Throw new \App\Exception\MismatchPasswordException();
+            throw new \App\Exception\MismatchPasswordException();
         }
 
         $this->password = $password;
     }
 
-    private function createUser(): void
+    private function createUser(\App\Database\Database $database): void
     {
-        $db = new \App\Database\Database();
-        $db->insert('users', $this->getUserArray());
+        $database->insert('users', $this->getUserArray());
     }
 
     private function getUserArray(): array
