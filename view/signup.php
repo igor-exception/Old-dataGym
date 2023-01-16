@@ -14,9 +14,10 @@ if (isset(
             $_POST['InputName'],
             $_POST['InputEmail'],
             $_POST['InputPassword'],
-            $_POST['InputPasswordConfirmation']
+            $_POST['InputPasswordConfirmation'],
+            new \App\Database\Database
         );
-        header('Location: ../index.php?msg=success');
+        header('Location: ./../../public/index.php?msg=success');
         exit();
     } catch (\Throwable $t) {
         echo "<p>{$t->getMessage()}</p>";
