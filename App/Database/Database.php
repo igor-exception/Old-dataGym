@@ -39,24 +39,80 @@ class Database
                 throw new \App\Exception\DatabaseInsertException;
             }
         } catch(\App\Exception\DatabaseInsertException $e) {
-            echo "Erro ao inserir usuário". $e->getMessage();
+            echo "Erro ao pesquisar dados.". $e->getMessage();
             die();
         } catch (\Throwable $t) {
-            echo "Erro procure um administrador.";
+            echo "Erro entre em contato com o administrador.";
             die();
         }
 
         return true;
     }
 
-    private function getKeysFromArray($array): string
+    public function search($table, $params): array
+    {
+        $this->connect();
+        
+        try {
+            $query = self::mountQuery($table, $params);
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+        } catch (\Throwable $t) {
+            echo "Erro entre em contato com o administrador.";
+            die();
+        }
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getKeysFromArray($array): string
     {
         return implode(', ', array_keys($array));
     }
 
-    private function getValuesFromArray($array): string
+    public static function getValuesFromArray($array): string
     {
         return "'" . implode("', '", array_values($array))."'";
+    }
+
+    public static function getSelectFieldsFromArray($array): string
+    {
+        return implode(', ', array_values($array));
+    }
+
+    /** update: acho que foi resolvido!
+     * Esta acontecendo erro.
+     * Quando é pra buscar apenas um campo, o montador de query fica certo
+     * quando tem mais de um, da erro.
+     * Talvez transformar o método privado em helper (classe abstrata)
+     * Perguntar no grupo
+     */
+    public static function mountQuery($table, $params): string
+    {
+        $query = '';
+
+        if(empty($table)) {
+            throw new \InvalidArgumentException('Nome da tabela não pode ser vazio');
+        }
+
+        $field = Database::getSelectFieldsFromArray($params['fields']);
+        if(count($params['where']) == 1) {
+            $where_key = Database::getKeysFromArray($params['where']);
+            $where_value = Database::getValuesFromArray($params['where']);
+            $query = "SELECT {$field} FROM {$table} WHERE {$where_key}={$where_value}";
+        } elseif(count($params['where']) >= 2) {
+            $query = "SELECT {$field} FROM {$table} WHERE ";
+            $last_key = array_key_last($params['where']);
+            foreach($params['where'] as $key => $value) {
+                $query.= $key. "='{$value}'";
+                if($key != $last_key) {
+                    $query.= " AND ";
+                }
+            }
+        } else {
+            $query = "SELECT {$field} FROM {$table}";
+        }
+
+        return $query;
     }
 
 }

@@ -109,6 +109,37 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(\App\User\User::class, $user);
     }
 
+    /**
+     * @dataProvider invalid_login_dataprovider
+     */
+    public function test_red_login($email, $password, $exception_name): void
+    {
+        $this->expectException($exception_name);
+
+        $user = new \App\User\User(
+            $this->name,
+            $this->email,
+            $this->password,
+            $this->password_confirmation,
+            $this->database_mock
+        );
+        $ret = \App\User\User::login($email, $password, new \App\Database\Database());
+    }
+
+    /**
+     * @dataProvider valid_login_dataprovider
+     */
+    public function test_green_login($email, $password): void
+    {
+        $ret = \App\User\User::login(
+            $email,
+            $password,
+            new \App\Database\Database()
+        );
+
+        $this->assertTrue($ret);
+    }
+
     public function invalid_names_dataprovider(): array
     {
         return [
@@ -158,6 +189,21 @@ class UserTest extends \PHPUnit\Framework\TestCase
         return [
             'should_get_an_instance_of_object_when_valid_password_and_password_confirmation' => ['password' => '12345678', 'password_confirmation' =>'12345678'],
             'should_get_an_instance_of_object_when_password_equals_255_chars' => ['password' => str_repeat('a', 255), 'password_confirmation' => str_repeat('a',255)],
+        ];
+    }
+
+    public function invalid_login_dataprovider(): array
+    {
+        return [
+            'should_get_an_exception_when_using_empty_email' => ['email' => '', 'password' => '123123123', 'exception_name' => \App\Exception\InvalidEmailOrPassword::class],
+            'should_get_an_exception_when_using_empty_password' => ['email' => 'john.doe@gmail.com', 'password' => '', 'exception_name' => \App\Exception\InvalidEmailOrPassword::class]
+        ];
+    }
+
+    public function valid_login_dataprovider(): array
+    {
+        return [
+            'should_get_true_when_using_valid_email_and_password' => ['email' => 'john.doe@gmail.com', 'password' => '123123']
         ];
     }
 }

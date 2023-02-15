@@ -6,13 +6,15 @@ class User
     private string $name;
     private string $email;
     private string $password;
+    private \App\Database\Database $database;
 
     public function __construct($name, $email, $password, $password_confirmation, \App\Database\Database $database)
     {
+        $this->database = $database;
         $this->setName($name);
         $this->setEmail($email);
         $this->setPassword($password, $password_confirmation);
-        $this->createUser($database);
+        $this->createUser();
     }
 
     private function setName($name): void
@@ -48,6 +50,13 @@ class User
             throw new \LengthException("Email precisa ser menor ou igual a 65 caracteres.");
         }
 
+        // verifica se ja existe mesmo email cadastrado, se tiver, da exception
+        $already_exists = $this->database->search('users', ['fields' => ['email'], 'where' => ['email' => $email]]);
+        
+        if(count($already_exists) >= 1) {
+            throw new \App\Exception\EmailAlreadyExists("Já possui uma conta registrada com este email.");
+        }
+
         $this->email = $email;
     }
 
@@ -69,12 +78,34 @@ class User
             throw new \App\Exception\MismatchPasswordException();
         }
 
-        $this->password = $password;
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
-    private function createUser(\App\Database\Database $database): void
+    public static function login($email, $password, \App\Database\Database $database): bool
     {
-        $database->insert('users', $this->getUserArray());
+        if(empty($email) || empty($password)) {
+            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
+        }
+
+        $ret = $database->search('users', ['fields' => ['id', 'name', 'password'], 'where' => ['email' => $email]]);
+
+        if(count($ret) < 1) {
+            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
+        }
+
+        if(password_verify($password, $ret[0]['password'])){
+            return true;
+        }
+        
+        throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
+
+        return false;
+    }
+
+
+    private function createUser(): void
+    {
+        $this->database->insert('users', $this->getUserArray());
     }
 
     private function getUserArray(): array
