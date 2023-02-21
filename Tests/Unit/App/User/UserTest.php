@@ -131,13 +131,26 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     public function test_green_login($email, $password): void
     {
+        $database_mock = $this->createStub(\App\Database\Database::class);
+        $database_mock->method('search')->willReturn([
+            [
+                "id"        => 1,
+                "name"      => "John Doe",
+                "password"  => '$2y$10$pQEdq4MFABZZKDYmxs0cNeFtVCSLKTbkZDtthPwk7i/22u1JUOPIu'
+            ]
+        ]);
+
         $ret = \App\User\User::login(
             $email,
             $password,
-            new \App\Database\Database()
+            $database_mock
         );
 
-        $this->assertTrue($ret);
+        $this->assertEquals($ret, [
+                'name' => 'John Doe',
+                'email' => $email,
+                'id' => 1
+        ]);
     }
 
     public function invalid_names_dataprovider(): array
@@ -203,7 +216,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function valid_login_dataprovider(): array
     {
         return [
-            'should_get_true_when_using_valid_email_and_password' => ['email' => 'john.doe@gmail.com', 'password' => '123123']
+            'should_get_true_when_using_valid_email_and_password' => ['email' => 'john.doe@gmail.com', 'password' => '123123123']
         ];
     }
 }

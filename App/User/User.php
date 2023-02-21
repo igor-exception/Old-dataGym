@@ -81,7 +81,7 @@ class User
         $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
-    public static function login($email, $password, \App\Database\Database $database): bool
+    public static function login($email, $password, \App\Database\Database $database): array
     {
         if(empty($email) || empty($password)) {
             throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
@@ -93,15 +93,26 @@ class User
             throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
         }
 
-        if(password_verify($password, $ret[0]['password'])){
-            return true;
+        $verified = self::check_password($password, $ret[0]['password']);
+        if(!$verified) {
+            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
         }
-        
-        throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
 
-        return false;
+        return [
+            'name' => $ret[0]['name'],
+            'email' => $email,
+            'id' => $ret[0]['id']
+        ];
     }
 
+    public static function check_password($received_password, $given_password): bool
+    {
+        if(!password_verify($received_password, $given_password)){
+            return false;
+        }
+
+        return true;
+    }
 
     private function createUser(): void
     {

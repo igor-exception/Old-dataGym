@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])) {
+  header('Location: /../view/dashboard/index.php');
+  exit();
+}
+?>
+
 <!doctype html>
 <html lang="pt-BR">
   <head>
@@ -11,9 +19,8 @@
     <title>DataGym</title>
   </head>
   <body>
-      <?php session_start() ?>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="./../">DataGymn</a>
+        <a class="navbar-brand" href="./../">DataGym</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

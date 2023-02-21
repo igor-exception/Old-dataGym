@@ -10,7 +10,7 @@ class DatabaseTest extends \PHPUnit\Framework\TestCase
      */
     public function test_valid_mount_query($table, $params, $expected): void
     {
-        $ret = \App\Database\Database::mountQuery($table, $params);
+        $ret = \App\Database\Database::mountSelectQuery($table, $params);
 
         $this->assertEquals($expected, $ret);
     }
