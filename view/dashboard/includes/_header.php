@@ -55,7 +55,7 @@ if(!isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])){
                                 <div class="sb-nav-link-icon"><i class="fas fa-dumbbell"></i></div>
                                 Treino (Ações)
                             </a>
-                            <a class="nav-link" href="profile.php">
+                            <a class="nav-link" href="/view/dashboard/profile/show.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 Perfil
                             </a>

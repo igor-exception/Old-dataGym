@@ -127,10 +127,27 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
     public function invalid_exercises_dataprovider()
     {
         return [
-            'should_get_an_exception_when_name_less_or_equal_2_chars' => ['name' => 'ab', 'description' => '', 'exception_name' => \LengthException::class],
-            'should_get_an_exception_when_name_longer_than_200_chars' => ['name' => str_repeat('a', 201), 'description' => '', 'exception_name' => \LengthException::class],
-            'should_get_an_exception_when_name_is_empty' => ['name' => '', 'description' => '', 'exception_name' => \App\Exception\EmptyExerciseNameException::class],
-            'should_get_an_exception_when_description_longer_than_65000_chars' => ['name' => 'supino', 'description' => str_repeat('a', 65001), 'exception_name' => \LengthException::class]
+            'should_get_an_exception_when_name_less_or_equal_2_chars' => [
+                'name' => 'ab', 
+                'description' => '', 
+                'exception_name' => \LengthException::class
+            ],
+            
+            'should_get_an_exception_when_name_longer_than_200_chars' => [
+                'name' => str_repeat('a', 201), 
+                'description' => '', 
+                'exception_name' => \LengthException::class
+            ],
+            'should_get_an_exception_when_name_is_empty' => [
+                'name' => '', 
+                'description' => '',
+                'exception_name' => \App\Exception\EmptyExerciseNameException::class
+            ],
+            'should_get_an_exception_when_description_longer_than_65000_chars' => [
+                'name' => 'supino',
+                'description' => str_repeat('a', 65001),
+                'exception_name' => \LengthException::class
+            ]
         ];
     }
 
@@ -153,19 +170,50 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
     public function invalid_getExercise_dataprovider()
     {
         return [
-            'should_get_an_exception_when_give_invalid_exercise_id' => ['id' => '999', 'exception_name' => \App\Exception\ExerciseNotFoundException::class],
-            'should_get_an_exception_when_give_empty_exercise_id' => ['id' => '', 'exception_name' => \App\Exception\InvalidExerciseInfoException::class]
+            'should_get_an_exception_when_give_invalid_exercise_id' => [
+                'id' => '999', 
+                'exception_name' => \App\Exception\ExerciseNotFoundException::class
+            ],
+            'should_get_an_exception_when_give_empty_exercise_id' => [
+                'id' => '',
+                'exception_name' => \App\Exception\InvalidExerciseInfoException::class
+            ]
         ];
     }
 
     public function invalid_updateExercise_dataprovider()
     {
         return [
-            'should_get_an_exception_when_give_an_empty_exercise_id' => ['id' => '', 'name' => 'supino', 'description' => '', 'exception_name' => \App\Exception\InvalidExerciseInfoException::class],
-            'should_get_an_exception_when_give_an_empty_exercise_name' => ['id' => '1', 'name' => '', 'description' => '', 'exception_name' => \App\Exception\EmptyExerciseNameException::class],
-            'should_get_an_exception_when_give_an_invented_exercise_id' => ['id' => '555', 'name' => 'supino', 'description' => '', 'exception_name' => \App\Exception\ExerciseNotFoundException::class],
-            'should_get_an_exception_when_name_longer_than_200_chars' => ['id' => '1', 'name' => str_repeat('a', 201), 'description' => '', 'exception_name' => \LengthException::class],
-            'should_get_an_exception_when_description_longer_than_65000_chars' => ['id' => '1', 'name' => 'Supino', 'description' => str_repeat('a', 65001), 'exception_name' => \LengthException::class]
+            'should_get_an_exception_when_give_an_empty_exercise_id' => [
+                'id' => '',
+                'name' => 'supino',
+                'description' => '',
+                'exception_name' => \App\Exception\InvalidExerciseInfoException::class
+            ],
+            'should_get_an_exception_when_give_an_empty_exercise_name' => [
+                'id' => '1',
+                'name' => '',
+                'description' => '',
+                'exception_name' => \App\Exception\EmptyExerciseNameException::class
+            ],
+            'should_get_an_exception_when_give_an_invented_exercise_id' => [
+                'id' => '555',
+                'name' => 'supino',
+                'description' => '',
+                'exception_name' => \App\Exception\ExerciseNotFoundException::class
+            ],
+            'should_get_an_exception_when_name_longer_than_200_chars' => [
+                'id' => '1',
+                'name' => str_repeat('a', 201),
+                'description' => '',
+                'exception_name' => \LengthException::class
+            ],
+            'should_get_an_exception_when_description_longer_than_65000_chars' => [
+                'id' => '1', 
+                'name' => 'Supino',
+                'description' => str_repeat('a', 65001),
+                'exception_name' => \LengthException::class
+            ]
 
         ];
     }
@@ -173,37 +221,76 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
     public function valid_updateExercise_dataprovider()
     {
         return [
-            'should_return_true_when_give_different_exercise_name_and_description' => ['id' => '10', 'name' => 'remada alta', 'description' => 'cabo', true],
-            'should_return_true_when_give_only_different_exercise_name' => ['id' => '10', 'name' => 'remada baixa', 'description' => '', true],
-            'should_return_true_when_give_only_different_exercise_description' => ['id' => '10', 'name' => 'remada', 'description' => 'Até a falha', true],
-            'should_return_false_when_give_unchange_info' => ['id' => '10', 'name' => 'remada', 'description' => '', false],
-            'should_return_true_when_give_name_less_or_equal_200_chars' => ['id' => '1', 'name' => str_repeat('a', 200), 'description' => '', true],
-            'should_return_true_when_give_description_less_or_equal_65000_chars' => ['id' => '1', 'name' => 'Supino', 'description' => str_repeat('a', 65000), true],
+            'should_return_true_when_give_different_exercise_name_and_description' => [
+                'id' => '10',
+                'name' => 'remada alta',
+                'description' => 'cabo',
+                'expected_return' => true
+            ],
+            'should_return_true_when_give_only_different_exercise_name' => [
+                'id' => '10',
+                'name' => 'remada baixa',
+                'description' => '',
+                'expected_return' => true
+            ],
+            'should_return_true_when_give_only_different_exercise_description' => [
+                'id' => '10',
+                'name' => 'remada',
+                'description' => 'Até a falha',
+                'expected_return' => true
+            ],
+            'should_return_false_when_give_unchange_info' => [
+                'id' => '10', 
+                'name' => 'remada', 
+                'description' => '',
+                'expected_return' => false
+            ],
+            'should_return_true_when_give_name_less_or_equal_200_chars' => [
+                'id' => '1',
+                'name' => str_repeat('a', 200),
+                'description' => '',
+                'expected_return' => true],
+            'should_return_true_when_give_description_less_or_equal_65000_chars' => [
+                'id' => '1',
+                'name' => 'Supino',
+                'description' => str_repeat('a', 65000), 
+                'expected_return' => true
+            ],
             
-            'should_return_true_when_give_especific_description' => ['id' => '10', 'name' => 'Supino Reto', 'description' => 'Músculos solicitados no supino reto
-            De modo geral, temos 4 músculos solicitados de forma prioritária no supino reto:
-            
-            Peitoral maior;
-            Peitoral menor;
-            Tríceps braquial;
-            Deltoide.
-            Destes, o músculo com menos solicitação, sendo mais um estabilizador, é o peitoral menor. Os outros 3, são os mais solicitados.
-            
-            O movimento do supino reto é basicamente, uma flexão horizontal do ombro (alguns estudiosos chamam este movimento de adução horizontal), com uma extensão de cotovelo.
-            
-            No caso do movimento de flexão horizontal do ombro, o movimento com mais amplitude, temos como base o peitoral maior e o deltoide (principalmente a porção anterior). Já na extensão do cotovelo, temos o trabalho do tríceps braquial.
-            
-            Por isso, o principal músculo solicitado no supino reto é o peitoral maior. Isso faz com que o supino reto seja uma das bases do treino de peito.
-            
-            Os outros músculos são sinergistas e se a execução for adequada, não teremos um trabalho tão intenso nestes músculos, como nos movimentos mais “isolados”', true]
+            'should_return_true_when_give_especific_description' => [
+                'id' => '10',
+                'name' => 'Supino Reto',
+                'description' => 'Músculos solicitados no supino reto
+                    De modo geral, temos 4 músculos solicitados de forma prioritária no supino reto:
+                    
+                    Peitoral maior;
+                    Peitoral menor;
+                    Tríceps braquial;
+                    Deltoide.
+                    Destes, o músculo com menos solicitação, sendo mais um estabilizador, é o peitoral menor. Os outros 3, são os mais solicitados.
+                    
+                    O movimento do supino reto é basicamente, uma flexão horizontal do ombro (alguns estudiosos chamam este movimento de adução horizontal), com uma extensão de cotovelo.
+                    
+                    No caso do movimento de flexão horizontal do ombro, o movimento com mais amplitude, temos como base o peitoral maior e o deltoide (principalmente a porção anterior). Já na extensão do cotovelo, temos o trabalho do tríceps braquial.
+                    
+                    Por isso, o principal músculo solicitado no supino reto é o peitoral maior. Isso faz com que o supino reto seja uma das bases do treino de peito.
+                    
+                    Os outros músculos são sinergistas e se a execução for adequada, não teremos um trabalho tão intenso nestes músculos, como nos movimentos mais “isolados”',
+                'expected_return' => true]
         ];
     }
 
     public function invalid_deleteExercise_dataprovider()
     {
         return [
-            'should_get_an_exception_when_give_an_empty_exercise_id' => ['id' => '', 'exception_name' => \App\Exception\InvalidExerciseInfoException::class],
-            'should_get_an_exception_when_give_an_invented_exercise_id' => ['id' => '999', 'exception_name' => \App\Exception\ExerciseNotFoundException::class],
+            'should_get_an_exception_when_give_an_empty_exercise_id' => [
+                'id' => '',
+                'exception_name' => \App\Exception\InvalidExerciseInfoException::class
+            ],
+            'should_get_an_exception_when_give_an_invented_exercise_id' => [
+                'id' => '999',
+                'exception_name' => \App\Exception\ExerciseNotFoundException::class
+            ],
         ];
     }
 
@@ -211,7 +298,10 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
     public function valid_deleteExercise_dataprovider()
     {
         return [
-            'should_return_true_when_give_a_valid_exercise_id' => ['id' => '10', true],
+            'should_return_true_when_give_a_valid_exercise_id' => [
+                'id' => '10',
+                'expected_return' => true
+            ],
         ];
     }
 }

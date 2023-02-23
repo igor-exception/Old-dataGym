@@ -131,8 +131,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
      */
     public function test_green_login($email, $password): void
     {
-        $database_mock = $this->createStub(\App\Database\Database::class);
-        $database_mock->method('search')->willReturn([
+        $this->database_mock->method('search')->willReturn([
             [
                 "id"        => 1,
                 "name"      => "John Doe",
@@ -143,7 +142,7 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $ret = \App\User\User::login(
             $email,
             $password,
-            $database_mock
+            $this->database_mock
         );
 
         $this->assertEquals($ret, [
@@ -156,9 +155,18 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function invalid_names_dataprovider(): array
     {
         return [
-            'should_get_an_exception_when_using_empty_name' => ['', \App\Exception\EmptyUserNameException::class],
-            'should_get_an_exception_when_using_name_shorter_than_3_chars' => ['Jo', \LengthException::class],
-            'should_get_an_exception_when_using_name_bigger_than_255_chars' => [str_repeat('a', 256), \LengthException::class]
+            'should_get_an_exception_when_using_empty_name' => [
+                'name' => '', 
+                'exception_name' => \App\Exception\EmptyUserNameException::class
+            ],
+            'should_get_an_exception_when_using_name_shorter_than_3_chars' => [
+                'name' => 'Jo',
+                'exception_name' => \LengthException::class
+            ],
+            'should_get_an_exception_when_using_name_bigger_than_255_chars' => [
+                'name' => str_repeat('a', 256),
+                'exception_name' => \LengthException::class
+            ]
         ];
     }
 
@@ -174,8 +182,14 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function invalid_emails_dataprovider(): array
     {
         return [
-            'should_get_an_exception_when_using_email_without_@_symbol' => ['john.doe.com', \App\Exception\InvalidEmailFormatException::class],
-            'should_get_an_exception_when_using_email_bigger_than_65_chars' => ['66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com', \LengthException::class]
+            'should_get_an_exception_when_using_email_without_@_symbol' => [
+               'email' => 'john.doe.com',
+               'expected_exception' => \App\Exception\InvalidEmailFormatException::class
+            ],
+            'should_get_an_exception_when_using_email_bigger_than_65_chars' => [
+                'email' => '66charssssssssssssssssssssssssssssssssssssssssssssssssss@gmail.com',
+                'expected_exception' => \LengthException::class
+            ]
         ];
     }
 
@@ -190,33 +204,66 @@ class UserTest extends \PHPUnit\Framework\TestCase
     public function invalid_passwords_dataprovider(): array
     {
         return [
-            'should_get_an_exception_when_using_blank_spaces_in_password' => ['password' => 'asd 123 asd', 'password_confirmation' => 'asd 123 asd', 'exception_name' => \App\Exception\InvalidPasswordBlankCharacterException::class],
-            'should_get_an_exception_when_using_password_shorter_than_8_chars' => ['password' => 'passwd', 'password_confirmation' => 'passwd', 'exception_name' => \LengthException::class],
-            'should_get_an_exception_when_using_password_bigger_than_255_chars' => ['password' => str_repeat('a', 256), 'password_confirmation' => str_repeat('a',256), 'exception_name' => \LengthException::class],
-            'should_get_an_exception_when_using_mismatching_password_and_password_confirmation' => ['password' => 'password123', 'password_confirmation' => 'password000', 'exception_name' => \App\Exception\MismatchPasswordException::class]
+            'should_get_an_exception_when_using_blank_spaces_in_password' => [
+                'password' => 'asd 123 asd',
+                'password_confirmation' => 'asd 123 asd',
+                'exception_name' => \App\Exception\InvalidPasswordBlankCharacterException::class
+            ],
+            'should_get_an_exception_when_using_password_shorter_than_8_chars' => [
+                'password' => 'passwd',
+                'password_confirmation' => 'passwd',
+                'exception_name' => \LengthException::class
+            ],
+            'should_get_an_exception_when_using_password_bigger_than_255_chars' => [
+                'password' => str_repeat('a', 256),
+                'password_confirmation' => str_repeat('a',256),
+                'exception_name' => \LengthException::class
+            ],
+            'should_get_an_exception_when_using_mismatching_password_and_password_confirmation' => [
+                'password' => 'password123',
+                'password_confirmation' => 'password000',
+                'exception_name' => \App\Exception\MismatchPasswordException::class
+            ]
         ];
     }
 
     public function valid_passwords_dataprovider(): array
     {
         return [
-            'should_get_an_instance_of_object_when_valid_password_and_password_confirmation' => ['password' => '12345678', 'password_confirmation' =>'12345678'],
-            'should_get_an_instance_of_object_when_password_equals_255_chars' => ['password' => str_repeat('a', 255), 'password_confirmation' => str_repeat('a',255)],
+            'should_get_an_instance_of_object_when_valid_password_and_password_confirmation' => [
+                'password' => '12345678',
+                'password_confirmation' =>'12345678'
+            ],
+            'should_get_an_instance_of_object_when_password_equals_255_chars' => [
+                'password' => str_repeat('a', 255),
+                'password_confirmation' => str_repeat('a',255)
+            ],
         ];
     }
 
     public function invalid_login_dataprovider(): array
     {
         return [
-            'should_get_an_exception_when_using_empty_email' => ['email' => '', 'password' => '123123123', 'exception_name' => \App\Exception\InvalidEmailOrPassword::class],
-            'should_get_an_exception_when_using_empty_password' => ['email' => 'john.doe@gmail.com', 'password' => '', 'exception_name' => \App\Exception\InvalidEmailOrPassword::class]
+            'should_get_an_exception_when_using_empty_email' => [
+                'email' => '',
+                'password' => '123123123',
+                'exception_name' => \App\Exception\InvalidEmailOrPassword::class
+            ],
+            'should_get_an_exception_when_using_empty_password' => [
+                'email' => 'john.doe@gmail.com',
+                'password' => '',
+                'exception_name' => \App\Exception\InvalidEmailOrPassword::class
+            ]
         ];
     }
 
     public function valid_login_dataprovider(): array
     {
         return [
-            'should_get_true_when_using_valid_email_and_password' => ['email' => 'john.doe@gmail.com', 'password' => '123123123']
+            'should_get_true_when_using_valid_email_and_password' => [
+                'email' => 'john.doe@gmail.com',
+                'password' => '123123123'
+            ]
         ];
     }
 }
