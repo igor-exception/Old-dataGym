@@ -26,19 +26,14 @@ class User
 
     private function setEmail($email): void
     {
-        $email = htmlspecialchars($email);
-        $email = trim($email);
-        
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \App\Exception\InvalidEmailFormatException();
-        }
-
-        if(strlen($email) > 65) {
-            throw new \LengthException("Email precisa ser menor ou igual a 65 caracteres.");
-        }
+        $this->email = UserValidators::validateEmail($email);
 
         // verifica se ja existe mesmo email cadastrado, se tiver, da exception
-        $already_exists = $this->database->search('users', ['fields' => ['email'], 'where' => ['email' => $email]]);
+        $already_exists = $this->database->search('users', [
+            'fields' => ['email'],
+            'where' => [
+                'email' => $email]
+            ]);
         
         if(count($already_exists) >= 1) {
             throw new \App\Exception\EmailAlreadyExists("Já possui uma conta registrada com este email.");

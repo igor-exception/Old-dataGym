@@ -22,4 +22,21 @@ class UserValidators {
 
         return $name;
     }
+
+    public static function validateEmail($email): string
+    {
+        $email = htmlspecialchars($email);
+        $email = trim($email);
+        
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new \App\Exception\InvalidEmailFormatException();
+        }
+
+        if(strlen($email) > 65) {
+            throw new \LengthException("Email precisa ser menor ou igual a 65 caracteres.");
+        }
+
+        return $email;
+    }
+    
 }
