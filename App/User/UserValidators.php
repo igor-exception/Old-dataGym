@@ -39,4 +39,23 @@ class UserValidators {
         return $email;
     }
     
+    public static function validatePassword($password, $password_confirmation = null): void
+    {
+        if(strpos($password, ' ')) {
+            throw new \App\Exception\InvalidPasswordBlankCharacterException();
+        }
+
+        if(strlen($password) < 8) {
+            throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
+        }
+
+        if(strlen($password) > 255) {
+            throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
+        }
+
+        if($password !== $password_confirmation) {
+            throw new \App\Exception\MismatchPasswordException();
+        }
+    }
+
 }

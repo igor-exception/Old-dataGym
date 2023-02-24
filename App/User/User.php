@@ -44,21 +44,7 @@ class User
 
     private function setPassword($password, $password_confirmation): void
     {
-        if(strpos($password, ' ')) {
-            throw new \App\Exception\InvalidPasswordBlankCharacterException();
-        }
-
-        if(strlen($password) < 8) {
-            throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
-        }
-
-        if(strlen($password) > 255) {
-            throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
-        }
-
-        if($password !== $password_confirmation) {
-            throw new \App\Exception\MismatchPasswordException();
-        }
+        UserValidators::validatePassword($password, $password_confirmation);
 
         $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
@@ -140,29 +126,6 @@ class User
         return $id;
     }
 
-    public static function validatePassword($password, $password_confirmation = null): string
-    {
-        if(strpos($password, ' ')) {
-            throw new \App\Exception\InvalidPasswordBlankCharacterException();
-        }
-
-        if(strlen($password) < 8) {
-            throw new \LengthException("Senha deve ter no mínimo 8 caracteres.");
-        }
-
-        if(strlen($password) > 255) {
-            throw new \LengthException("Senha deve ter no máximo 255 caracteres.");
-        }
-
-        if($password !== $password_confirmation) {
-            throw new \App\Exception\MismatchPasswordException();
-        }
-
-        $password_encrypted = password_hash($password, PASSWORD_DEFAULT);
-
-        return $password_encrypted;
-    }
-
     public static function updateUser($id, $name, $password, $password_confirmation, \App\Database\Database $database, $session_user_id = null): bool
     {
         // verifica se o id do form é o mesmo que veio da sessão,
@@ -173,7 +136,9 @@ class User
 
         $id = self::validateId($id);
         $name = UserValidators::validateName($name);
-        $password = self::validatePassword($password, $password_confirmation);
+
+        UserValidators::validatePassword($password, $password_confirmation);
+        $password = password_hash($password, PASSWORD_DEFAULT);
 
         $user_info = $database->search('users', ['fields' => ['id', 'name', 'email'], 'where' => ['id' => $id]]);
         if(count($user_info) < 1) {
@@ -198,5 +163,4 @@ class User
 
         return $ret;
     }
-
 }
