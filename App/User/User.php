@@ -1,6 +1,8 @@
 <?php
 namespace App\User;
 
+use \App\User\UserValidators;
+
 class User
 {
     private string $name;
@@ -19,9 +21,7 @@ class User
 
     private function setName($name): void
     {
-        $name = self::validateName($name);
-
-        $this->name = $name;
+        $this->name = UserValidators::validateName($name);
     }
 
     private function setEmail($email): void
@@ -145,26 +145,6 @@ class User
         return $id;
     }
 
-    public static function validateName($name): string
-    {
-        $name = htmlspecialchars($name);
-        $name = trim($name);
-        
-        if(empty($name)){
-            throw new \App\Exception\EmptyUserNameException;
-        }
-
-        if(strlen($name) < 3) {
-            throw new \LengthException("Nome precisa ser maior ou igual a 3 caracteres.");
-        }
-
-        if(strlen($name) > 255) {
-            throw new \LengthException("Nome precisa ser menor ou igual a 255 caracteres.");
-        }
-
-        return $name;
-    }
-
     public static function validatePassword($password, $password_confirmation = null): string
     {
         if(strpos($password, ' ')) {
@@ -197,7 +177,7 @@ class User
         }
 
         $id = self::validateId($id);
-        $name = self::validateName($name);
+        $name = UserValidators::validateName($name);
         $password = self::validatePassword($password, $password_confirmation);
 
         $user_info = $database->search('users', ['fields' => ['id', 'name', 'email'], 'where' => ['id' => $id]]);
