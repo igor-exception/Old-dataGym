@@ -47,10 +47,10 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
         $exercise_info = \App\Exercise\Exercise::getExercise($id, $this->database_mock);
 
         $this->assertEquals($exercise_info, [
-                                'id' => 10,
-                                'name' => 'Remada baixa',
-                                'description' => 'Usando corda'
-                            ]);
+                                    'id' => 10,
+                                    'name' => 'Remada baixa',
+                                    'description' => 'Usando corda'
+                                ]);
     }
 
     /**

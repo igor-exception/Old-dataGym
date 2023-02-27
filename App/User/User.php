@@ -1,7 +1,8 @@
 <?php
 namespace App\User;
 
-use \App\User\UserValidators;
+use \App\Validator\GeneralValidator;
+use \App\Login\Login;
 
 class User
 {
@@ -21,65 +22,38 @@ class User
 
     private function setName($name): void
     {
-        $this->name = UserValidators::validateName($name);
+        $this->name = GeneralValidator::validateName($name);
     }
 
     private function setEmail($email): void
     {
-        $this->email = UserValidators::validateEmail($email);
+        $email = GeneralValidator::validateEmail($email);
 
-        // verifica se ja existe mesmo email cadastrado, se tiver, da exception
-        $already_exists = $this->database->search('users', [
+        GeneralValidator::validateEmailAvailable($email, $this->database);
+
+        $this->email = $email;
+    }
+
+    public static function EmailAvailable($email, $database): bool
+    {
+        $ret = $database->search('users', [
             'fields' => ['email'],
             'where' => [
                 'email' => $email]
             ]);
         
-        if(count($already_exists) >= 1) {
-            throw new \App\Exception\EmailAlreadyExists("Já possui uma conta registrada com este email.");
-        }
-
-        $this->email = $email;
-    }
-
-    private function setPassword($password, $password_confirmation): void
-    {
-        UserValidators::validatePassword($password, $password_confirmation);
-
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
-    }
-
-    public static function login($email, $password, \App\Database\Database $database): array
-    {
-        if(empty($email) || empty($password)) {
-            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
-        }
-
-        $ret = $database->search('users', ['fields' => ['id', 'name', 'password'], 'where' => ['email' => $email]]);
-
         if(count($ret) < 1) {
-            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
-        }
-
-        $verified = self::check_password($password, $ret[0]['password']);
-        if(!$verified) {
-            throw new \App\Exception\InvalidEmailOrPassword("Email ou senha inválidos.");
-        }
-
-        return [
-            'name' => $ret[0]['name'],
-            'email' => $email,
-            'id' => $ret[0]['id']
-        ];
-    }
-
-    public static function check_password($received_password, $hash): bool
-    {
-        if(!password_verify($received_password, $hash)){
             return false;
         }
 
         return true;
+    }
+
+    private function setPassword($password, $password_confirmation): void
+    {
+        GeneralValidator::validatePassword($password, $password_confirmation);
+
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
     private function createUser(): void
@@ -98,7 +72,7 @@ class User
 
     public static function getUserById($id, \App\Database\Database $database): array
     {
-        self::validateId($id);
+        GeneralValidator::validateId($id);
 
         // verificar se o user existe
         // retornar infos do user
@@ -114,18 +88,6 @@ class User
         ];
     }
 
-    public static function validateId($id): string
-    {
-        $id = htmlspecialchars($id);
-        $id = trim($id);
-
-        if(empty($id)) {
-            throw new \App\Exception\InvalidUserInfoException();
-        }
-
-        return $id;
-    }
-
     public static function updateUser($id, $name, $password, $password_confirmation, \App\Database\Database $database, $session_user_id = null): bool
     {
         // verifica se o id do form é o mesmo que veio da sessão,
@@ -134,13 +96,13 @@ class User
             throw new \App\Exception\InvalidUserInfoException();
         }
 
-        $id = self::validateId($id);
-        $name = UserValidators::validateName($name);
+        $id = GeneralValidator::validateId($id);
+        $name = GeneralValidator::validateName($name);
 
-        UserValidators::validatePassword($password, $password_confirmation);
-        $password = password_hash($password, PASSWORD_DEFAULT);
+        GeneralValidator::validatePassword($password, $password_confirmation);
 
-        $user_info = $database->search('users', ['fields' => ['id', 'name', 'email'], 'where' => ['id' => $id]]);
+        $user_info = $database->search('users', ['fields' => ['id', 'name', 'email', 'password'], 'where' => ['id' => $id]]);
+        
         if(count($user_info) < 1) {
             throw new \App\Exception\UserNotFoundException();
         }
@@ -151,7 +113,7 @@ class User
             $fields['name'] = $name;
         }
 
-        if(self::check_password($password, $user_info[0]['password'])) {
+        if(!Login::check_password($password, $user_info[0]['password'])) {
             $fields['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
 

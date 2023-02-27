@@ -30,7 +30,7 @@ class ProfileTest extends \PHPUnit\Framework\TestCase
         $this->database_mock->method('search')->willReturn([[
             'id' => '10',
             'name' => 'John Doe',
-            'password' => '$2y$10$adZMgNjNpLVgHUZE5FsSM.cq9tRKCfO5J3nrMo/WxrxtISoq.rYda',
+            'password' => '$2y$10$DfhPBunf97RDZHAEu87jy./cQGDIoi3OTH48nZnxCvlrCAE5snSIe', //hash 123123123
             'email' => 'john.doe@gmail.com'
         ]]);
 

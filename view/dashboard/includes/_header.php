@@ -1,4 +1,5 @@
-<?php session_start();
+<?php
+session_start();
 if(!isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])){
     header('Location: /../../../.');
 }

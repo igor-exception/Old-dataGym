@@ -1,8 +1,8 @@
 <?php
 
-namespace App\User;
+namespace App\Validator;
 
-class UserValidators {
+class GeneralValidator {
     public static function validateName($name): string
     {
         $name = htmlspecialchars($name);
@@ -56,6 +56,27 @@ class UserValidators {
         if($password !== $password_confirmation) {
             throw new \App\Exception\MismatchPasswordException();
         }
+    }
+
+    public static function validateEmailAvailable($email, \App\Database\Database $database): void
+    {
+        $ret = \App\User\User::EmailAvailable($email, $database);
+        
+        if(!$ret) {
+            throw new \App\Exception\EmailAlreadyExists("Já possui uma conta registrada com este email.");
+        }
+    }
+
+    public static function validateId($id): string
+    {
+        $id = htmlspecialchars($id);
+        $id = trim($id);
+
+        if(empty($id)) {
+            throw new \App\Exception\InvalidUserInfoException();
+        }
+
+        return $id;
     }
 
 }

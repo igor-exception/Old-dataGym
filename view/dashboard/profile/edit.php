@@ -6,9 +6,13 @@ require_once '../includes/_header.php';
         try {
             $ret = \App\User\User::updateUser($_POST['id'], $_POST['name'], $_POST['password'], $_POST['passwordConfirmation'], new \App\Database\Database(), $_SESSION['id']);
 
-            // redireciona para logout, para atualizar sessao
-            header("Location: /view/dashboard/logout.php");
-            exit();
+            if($ret) {
+                // redireciona para logout, para atualizar sessao
+                header("Location: /view/dashboard/logout.php");
+                exit();
+            }
+            
+            echo "<p>Não foi possível alterar dados.</p>";
         }catch (\Throwable $t) {
             echo "<p>{$t->getMessage()}</p>";
         }
