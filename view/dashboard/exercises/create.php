@@ -5,7 +5,7 @@ require_once '../includes/_header.php';
 
 if(isset($_POST['name'], $_POST['description'])) {
     try {
-        $exercise = new \App\Exercise\Exercise($_POST['name'], $_POST['description'], new \App\Database\Database());
+        $exercise = new \App\Exercise\Exercise($_POST['name'], $_POST['description'], $_SESSION['id'], new \App\Database\Database());
         header("Location: /view/dashboard/exercises/show.php?id={$exercise->getId()}");
         exit();
     } catch(\Throwable $t) {

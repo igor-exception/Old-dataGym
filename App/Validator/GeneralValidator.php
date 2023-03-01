@@ -3,6 +3,7 @@
 namespace App\Validator;
 
 class GeneralValidator {
+
     public static function validateName($name): string
     {
         $name = htmlspecialchars($name);
@@ -67,7 +68,7 @@ class GeneralValidator {
         }
     }
 
-    public static function validateId($id): string
+    public static function validateUserId($id): string
     {
         $id = htmlspecialchars($id);
         $id = trim($id);
@@ -79,4 +80,52 @@ class GeneralValidator {
         return $id;
     }
 
+    public static function validateExerciseId($id): string
+    {
+        $id = htmlspecialchars($id);
+        $id = trim($id);
+
+        if(empty($id)) {
+            throw new \App\Exception\InvalidExerciseInfoException();
+        }
+
+        return $id;
+    }
+
+    public static function validateExerciseName($name): string
+    {
+        $name = htmlspecialchars($name);
+        $name = trim($name);
+
+        if(empty($name)) {
+            throw new \App\Exception\EmptyExerciseNameException();
+        }
+
+        if(strlen($name) <= 2) {
+            throw new \LengthException('Nome muito curto. Precisa ser maior que 2 caracteres.');
+        }
+
+        if(strlen($name) > 200) {
+            throw new \LengthException('Nome muito Longo. Precisa ser menor que 200 caracteres.');
+        }
+
+        return $name;
+    }
+
+    public static function validateExerciseDescription($description): string
+    {
+        $description = htmlspecialchars($description);
+        $description = trim($description);
+
+        if(strlen($description) > 65000) {
+            throw new \LengthException('Descrição muito Longa. Precisa ser menor que 65.000 caracteres.');
+        }
+
+        return $description;
+    }
+
+    public static function validateExerciseIdExists($id, \App\Database\Database $database): void
+    {
+        \App\Exercise\Exercise::getExercise($id, $database);
+    }
 }

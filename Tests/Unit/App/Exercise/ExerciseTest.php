@@ -12,23 +12,44 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider invalid_exercises_dataprovider
+     * @dataProvider invalid_exercise_name_dataprovider
      */
-    public function test_red_cases($name, $description = null, $exception_name)
+    public function test_red_name($name, $description, $user_id, $exception_name)
     {
         $this->expectException($exception_name);
 
-        $exercise = new \App\Exercise\Exercise($name, $description, $this->database_mock);
+        $exercise = new \App\Exercise\Exercise($name, $description, $user_id, $this->database_mock);
     }
 
     /**
-     * @dataProvider valid_exercises_dataprovider
+     * @dataProvider valid_exercise_name_dataprovider
      */
-    public function test_green_cases($name, $description = null): void
+    public function test_green_name($name, $description, $user_id): void
     {
-        $exercise = new \App\Exercise\Exercise($name, $description, $this->database_mock);
+        $this->database_mock->method('insert');
+        $exercise = new \App\Exercise\Exercise($name, $description, $user_id, $this->database_mock);
 
         $this->assertInstanceOf(\App\Exercise\Exercise::class, $exercise);
+    }
+
+    /**
+     * @dataProvider invalid_exercise_description_dataprovider
+     */
+    public function test_red_description($name, $description, $user_id, $exception_name)
+    {
+        $this->expectException($exception_name);
+
+        $exercise = new \App\Exercise\Exercise($name, $description, $user_id, $this->database_mock);
+    }
+
+    /**
+     * @dataProvider invalid_exercise_user_id_dataprovider
+     */
+    public function test_red_user_id($name, $description, $user_id, $exception_name)
+    {
+        $this->expectException($exception_name);
+
+        $exercise = new \App\Exercise\Exercise($name, $description, $user_id, $this->database_mock);
     }
 
     /**
@@ -47,10 +68,10 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
         $exercise_info = \App\Exercise\Exercise::getExercise($id, $this->database_mock);
 
         $this->assertEquals($exercise_info, [
-                                    'id' => 10,
-                                    'name' => 'Remada baixa',
-                                    'description' => 'Usando corda'
-                                ]);
+            'id' => 10,
+            'name' => 'Remada baixa',
+            'description' => 'Usando corda'
+        ]);
     }
 
     /**
@@ -124,41 +145,77 @@ class ExerciseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected_return, $ret);
     }
 
-    public function invalid_exercises_dataprovider()
+    public function invalid_exercise_name_dataprovider()
     {
         return [
             'should_get_an_exception_when_name_less_or_equal_2_chars' => [
                 'name' => 'ab', 
-                'description' => '', 
+                'description' => '',
+                'user_id' => '10',
                 'exception_name' => \LengthException::class
             ],
             
             'should_get_an_exception_when_name_longer_than_200_chars' => [
                 'name' => str_repeat('a', 201), 
-                'description' => '', 
+                'description' => '',
+                'user_id' => '10',
                 'exception_name' => \LengthException::class
             ],
             'should_get_an_exception_when_name_is_empty' => [
                 'name' => '', 
                 'description' => '',
+                'user_id' => '10',
                 'exception_name' => \App\Exception\EmptyExerciseNameException::class
+            ]
+        ];
+    }
+
+    public function valid_exercise_name_dataprovider()
+    {
+        return [
+            'should_not_get_an_exception_when_name_equal_3_chars' => [
+                'name' => 'abs',
+                'description' => '',
+                'user_id' => '10'
             ],
+            'should_not_get_an_exception_when_name_equal_200_chars' => [
+                'name' => str_repeat('a', 200),
+                'description' => '',
+                'user_id' => '10'
+            ],
+            'should_not_get_an_exception_when_name_less_than_200' => [
+                'name' => 'Pulley costas',
+                'description' => '',
+                'user_id' => '10'
+            ]
+        ];
+    }
+
+    public function invalid_exercise_description_dataprovider()
+    {
+        return [
             'should_get_an_exception_when_description_longer_than_65000_chars' => [
                 'name' => 'supino',
                 'description' => str_repeat('a', 65001),
+                'user_id' => '10',
                 'exception_name' => \LengthException::class
             ]
         ];
     }
 
-    public function valid_exercises_dataprovider()
+
+    public function invalid_exercise_user_id_dataprovider()
     {
         return [
-            'should_not_get_an_exception_when_name_equal_3_chars' => ['name' => 'abs'],
-            'should_not_get_an_exception_when_name_equal_200_chars' => ['name' => str_repeat('a', 200)],
-            'should_not_get_an_exception_when_name_less_than_200' => ['name' => 'Pulley costas', 200]
+            'should_get_an_exception_when_user_id_is_empty' => [
+                'name' => 'supino',
+                'description' => '',
+                'user_id' => '',
+                'exception_name' => \App\Exception\InvalidUserInfoException::class
+            ]
         ];
     }
+
 
     public function valid_getExercise_dataprovider()
     {

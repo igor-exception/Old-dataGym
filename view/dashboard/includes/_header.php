@@ -52,7 +52,7 @@ if(!isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])){
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-pie"></i></div>
                                 Exercícios
                             </a>
-                            <a class="nav-link" href="/view/dashboard/actions.php">
+                            <a class="nav-link" href="/view/dashboard/actions/list.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-dumbbell"></i></div>
                                 Treino (Ações)
                             </a>
@@ -61,7 +61,7 @@ if(!isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])){
                                 Perfil
                             </a>
                             <li><hr class="dropdown-divider" /></li>
-                            <a class="nav-link" href="logout.php">
+                            <a class="nav-link" href="/view/dashboard/logout.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                                 Logout
                             </a>
@@ -69,7 +69,7 @@ if(!isset($_SESSION['name'], $_SESSION['email'], $_SESSION['id'])){
                     </div>
                     <div class="sb-sidenav-footer">
                         <?php if(session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['name'])){ ?>
-                        <?php echo $_SESSION['name']?>
+                        <?= $_SESSION['name']?>
                         <?php }?>
                     </div>
                 </nav>

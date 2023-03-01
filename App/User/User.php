@@ -29,7 +29,7 @@ class User
     {
         $email = GeneralValidator::validateEmail($email);
 
-        GeneralValidator::validateEmailAvailable($email, $this->database);
+        GeneralValidator::validateEmailAvailable($email, $this);
 
         $this->email = $email;
     }
@@ -43,10 +43,10 @@ class User
             ]);
         
         if(count($ret) < 1) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private function setPassword($password, $password_confirmation): void
@@ -72,7 +72,7 @@ class User
 
     public static function getUserById($id, \App\Database\Database $database): array
     {
-        GeneralValidator::validateId($id);
+        GeneralValidator::validateUserId($id);
 
         // verificar se o user existe
         // retornar infos do user
@@ -96,7 +96,7 @@ class User
             throw new \App\Exception\InvalidUserInfoException();
         }
 
-        $id = GeneralValidator::validateId($id);
+        $id = GeneralValidator::validateUserId($id);
         $name = GeneralValidator::validateName($name);
 
         GeneralValidator::validatePassword($password, $password_confirmation);

@@ -11,7 +11,9 @@ CREATE TABLE exercises (
     id int NOT NULL AUTO_INCREMENT,
     name VARCHAR(255),
     description TEXT,
-    PRIMARY KEY(id)
+    id_user int(255) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE actions (
     id int NOT NULL AUTO_INCREMENT,
