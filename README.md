@@ -1,39 +1,40 @@
 # dataGym
-Projeto pessoal para consolidar alguns conhecimentos em programação e testes.
 
-Ideia principal do projeto:
-Ao fazer um exercicio de musculação, poderei usar esta aplicação para registrar a evolução de carga nos exercícios.
-Por exemplo:
-* Usuário: John Doe
-* Exercício: Supino
-* Ações:
-  * Repetições: 10
-  * **Peso: 20kg**
-  * Descanso: 3min
-  * Data: 01/12/2022
-----
-* Usuário: John Doe
-* Exercício: Supino
-* Ações:
-  * Repetições: 10
-  * **Peso: 22kg**
-  * Descanso: 3min
-  * Data: 04/12/2022
-----
-* Usuário: John Doe
-* Exercício: Supino
-* Ações:
-  * Repetições: 10
-  * **Peso: 24kg**
-  * Descanso: 3min
-  * Data: 08/12/2022
+personal project to consolidate some knowledge in programming and testing.
 
-Posteriormente poderei apresentar gráficos mostrando evolução/involução.
-Conforme obtvermos mais dados, o app apresentará resumos com estatísticas usando alguma lib ainda não definida.
+Main idea of the project: When doing a bodybuilding exercise, I will be able to use this application to register the load evolution in the exercises. For example:
 
-## Rodar o projeto
-Uma opção para rodar o projeto, é usando docker:
-* $ docker pull igor972/php-study
-* Na pasta do projeto: $ docker compose up -d
-* Acessar localhost:50001
+* User: John Doe
+* Exercise: bench press
+* Actions:
+  * Reps: 10
+  * Weight: 20kg
+  * Rest: 3min
+  * Date: 01/12/2022
+---
+* User: John Doe
+* Exercise: bench press
+* Actions:
+  * Reps: 10
+  * Weight: 22kg
+  * Rest: 3min
+  * Date: 04/12/2022
+---
+* User: John Doe
+* Exercise: bench press
+* Actions:
+  * Reps: 10
+  * Weight: 24kg
+  * Rest: 3min
+  * Date: 08/12/2022
 
+later I will be able to present graphs showing evolution/involution. As we get more data, the app will present summaries with statistics using some lib not yet defined.
+
+run the project
+One option to run the project is to use docker:
+
+$ docker pull igor972/php-study
+
+In the project folder: $ docker compose up -d
+
+Access localhost:50001
